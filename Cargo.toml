@@ -1,6 +1,16 @@
 [package]
-name = "xoshiro"
-version = "0.0.1"
 authors = ["Vinzent Steinberg <Vinzent.Steinberg@gmail.com>"]
+description = "Xoshiro, xoroshiro and splitmix64 random number generators"
+documentation = "https://docs.rs/xoshiro"
+keywords = ["rng"]
+license = "MIT/Apache-2.0"
+name = "xoshiro"
+repository = "https://github.com/vks/xoshiro"
+version = "0.0.1"
 
-[dependencies]
+[[bench]]
+harness = false
+name = "bench"
+
+[dev-dependencies]
+bencher = "0.1.5"

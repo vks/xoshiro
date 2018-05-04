@@ -25,10 +25,12 @@ pub struct Xoshiro128 {
 }
 
 impl Xoshiro128 {
+    #[inline]
     pub fn from_seed(s: [u32; 4]) -> Xoshiro128 {
         Xoshiro128 { s }
     }
 
+    #[inline]
     pub fn next(&mut self) -> u32 {
         let result_starstar = rotl(self.s[0] * 5, 7) * 9;
         let t = [0, 0, self.s[1] << 9, 0];
@@ -45,6 +47,7 @@ pub struct Xoshiro128SIMD {
 }
 
 impl Xoshiro128SIMD {
+    #[inline]
     pub fn from_seed(s: [u32; 4]) -> Xoshiro128SIMD {
         unsafe {
             Xoshiro128SIMD {
@@ -54,6 +57,7 @@ impl Xoshiro128SIMD {
         }
     }
 
+    #[inline]
     pub fn next(&mut self) -> u32 {
         unsafe {
             let s0 = to_u32(_mm_extract_epi32(self.s, 3));
