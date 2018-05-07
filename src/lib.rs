@@ -32,7 +32,7 @@ impl Xoshiro128 {
 
     #[inline]
     pub fn next(&mut self) -> u32 {
-        let result_starstar = rotl(self.s[0] * 5, 7) * 9;
+        let result_starstar = rotl(self.s[0].wrapping_mul(5), 7).wrapping_mul(9);
         let t = [0, 0, self.s[1] << 9, 0];
         self.s = xor(self.s, shuffle(self.s));
         self.s = xor(self.s, t);
@@ -61,7 +61,7 @@ impl Xoshiro128SIMD {
     pub fn next(&mut self) -> u32 {
         unsafe {
             let s0 = to_u32(_mm_extract_epi32(self.s, 3));
-            let result_starstar = rotl(s0 * 5, 7) * 9;
+            let result_starstar = rotl(s0.wrapping_mul(5), 7).wrapping_mul(9);
             let shifted = to_u32(_mm_extract_epi32(self.s, 2)) << 9;
             let t = _mm_set_epi32(0, 0, to_i32(shifted), 0);
             let shuffled = _mm_shuffle_epi32(self.s, 0b00_01_11_10);
@@ -91,7 +91,8 @@ mod tests {
     fn test_xoshiro_simd() {
         let mut rng1 = Xoshiro128::from_seed([1, 2, 3, 4]);
         let mut rng2 = Xoshiro128SIMD::from_seed([1, 2, 3, 4]);
-        assert_eq!(rng1.next(), rng2.next());
-        assert_eq!(rng1.next(), rng2.next());
+        for _ in 0..100 {
+            assert_eq!(rng1.next(), rng2.next());
+        }
     }
 }
