@@ -1,4 +1,3 @@
-use std::arch::x86_64::*;
 
 fn rotl(x: u32, k: u32) -> u32 {
     (x << k) | (x >> (32 - k))
@@ -17,6 +16,7 @@ fn starstar(s0: u32) -> u32 {
     rotl(s0.wrapping_mul(5), 7).wrapping_mul(9)
 }
 
+#[derive(Debug, Clone)]
 pub struct Xoshiro128 {
     s: [u32; 4],
 }
@@ -65,38 +65,52 @@ impl Xoshiro128 {
     }
 }
 
-pub struct Xoshiro128SIMD {
-    s: __m128i,
-}
+#[cfg(all(any(target_arch = "x86", target_arch = "x86_64"),
+      target_feature = "avx2"))]
+pub mod avx2 {
+    #[cfg(target_arch = "x86")]
+    use std::arch::x86::*;
+    #[cfg(target_arch = "x86_64")]
+    use std::arch::x86_64::*;
+    use super::{rotl, starstar, to_u32, to_i32};
 
-impl Xoshiro128SIMD {
-    #[inline]
-    pub fn from_seed(s: [u32; 4]) -> Xoshiro128SIMD {
-        unsafe {
-            Xoshiro128SIMD {
-                s: _mm_set_epi32(to_i32(s[0]), to_i32(s[1]),
-                                 to_i32(s[2]), to_i32(s[3]))
-            }
-        }
+    #[derive(Debug, Clone)]
+    pub struct Xoshiro128 {
+        s: __m128i,
     }
 
-    #[inline]
-    pub fn next(&mut self) -> u32 {
-        unsafe {
-            let s0 = _mm_extract_epi32(self.s, 3);
-            let s1 = _mm_extract_epi32(self.s, 2);
-            let result_starstar = starstar(to_u32(s0));
-            let shifted = to_u32(s1) << 9;
-            let t = _mm_set_epi32(0, 0, to_i32(shifted), 0);
-            let shuffled = _mm_shuffle_epi32(self.s, 0b00_01_11_10);
-            self.s = _mm_xor_si128(self.s, shuffled);
-            self.s = _mm_xor_si128(self.s, _mm_set_epi32(s1, s0, 0, 0));
-            self.s = _mm_xor_si128(self.s, t);
-            let s3 = to_u32(_mm_extract_epi32(self.s, 0));
-            let u = _mm_set_epi32(0, 0, 0, to_i32(rotl(s3, 11)));
-            self.s = _mm_blend_epi32(self.s, u, 0b0001); // this requires avx2 :(
+    impl Xoshiro128 {
+        #[inline]
+        pub fn from_seed(s: [u32; 4]) -> Xoshiro128 {
+            unsafe {
+                Xoshiro128 {
+                    s: _mm_set_epi32(to_i32(s[0]), to_i32(s[1]),
+                                     to_i32(s[2]), to_i32(s[3]))
+                }
+            }
+        }
 
-            result_starstar
+        #[inline]
+        pub fn next(&mut self) -> u32 {
+            unsafe {
+                let s0 = _mm_extract_epi32(self.s, 3);
+                let s1 = _mm_extract_epi32(self.s, 2);
+                let result_starstar = starstar(to_u32(s0));
+                let shifted = to_u32(s1) << 9;
+                let t = _mm_set_epi32(0, 0, to_i32(shifted), 0);
+                let shuffled = _mm_shuffle_epi32(self.s, 0b00_01_11_10);
+                self.s = _mm_xor_si128(self.s, shuffled);
+                self.s = _mm_xor_si128(self.s, _mm_set_epi32(s1, s0, 0, 0));
+                self.s = _mm_xor_si128(self.s, t);
+                let s3 = to_u32(_mm_extract_epi32(self.s, 0));
+                let u = _mm_set_epi32(0, 0, 0, to_i32(rotl(s3, 11)));
+                 // `_mm_blend_epi32` requires avx2. In principle this could also
+                 // be implemented using `_mm_blend_epi16`, which requires only
+                 // sse4.1.
+                self.s = _mm_blend_epi32(self.s, u, 0b0001);
+
+                result_starstar
+            }
         }
     }
 }
@@ -121,9 +135,11 @@ mod tests {
     }
 
     #[test]
+    #[cfg(all(any(target_arch = "x86", target_arch = "x86_64"),
+          target_feature = "avx2"))]
     fn test_xoshiro_simd() {
         let mut rng1 = Xoshiro128::from_seed([1, 2, 3, 4]);
-        let mut rng2 = Xoshiro128SIMD::from_seed([1, 2, 3, 4]);
+        let mut rng2 = super::avx2::Xoshiro128::from_seed([1, 2, 3, 4]);
         for _ in 0..100 {
             assert_eq!(rng1.next(), rng2.next());
         }
