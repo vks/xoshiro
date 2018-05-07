@@ -13,6 +13,10 @@ fn to_u32(x: i32) -> u32 {
     unsafe { std::mem::transmute(x) }
 }
 
+fn starstar(s0: u32) -> u32 {
+    rotl(s0.wrapping_mul(5), 7).wrapping_mul(9)
+}
+
 pub struct Xoshiro128 {
     s: [u32; 4],
 }
@@ -25,7 +29,7 @@ impl Xoshiro128 {
 
     #[inline]
     pub fn next(&mut self) -> u32 {
-        let result_starstar = rotl(self.s[0].wrapping_mul(5), 7).wrapping_mul(9);
+        let result_starstar = starstar(self.s[0]);
         let t = self.s[1] << 9;
 
         /*
@@ -81,7 +85,7 @@ impl Xoshiro128SIMD {
         unsafe {
             let s0 = _mm_extract_epi32(self.s, 3);
             let s1 = _mm_extract_epi32(self.s, 2);
-            let result_starstar = rotl(to_u32(s0).wrapping_mul(5), 7).wrapping_mul(9);
+            let result_starstar = starstar(to_u32(s0));
             let shifted = to_u32(s1) << 9;
             let t = _mm_set_epi32(0, 0, to_i32(shifted), 0);
             let shuffled = _mm_shuffle_epi32(self.s, 0b00_01_11_10);
