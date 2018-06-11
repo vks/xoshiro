@@ -22,6 +22,50 @@ impl Xoshiro128StarStar {
         let mut rng = SplitMix64::from_seed_u64(seed);
         Xoshiro128StarStar::from_rng(&mut rng).unwrap()
     }
+
+    /// Jump forward, equivalently to 2^64 calls to `next_u32()`.
+    ///
+    /// This can be used to generate 2^64 non-overlapping subsequences for
+    /// parallel computations.
+    ///
+    /// ```
+    /// # extern crate rand;
+    /// # extern crate xoshiro;
+    /// # fn main() {
+    /// use rand::SeedableRng;
+    /// use xoshiro::Xoroshiro128StarStar;
+    ///
+    /// let rng1 = Xoroshiro128StarStar::from_seed_u64(0);
+    /// let mut rng2 = rng1.clone();
+    /// rng2.jump();
+    /// let mut rng3 = rng2.clone();
+    /// rng3.jump();
+    /// # }
+    /// ```
+    pub fn jump(&mut self) {
+        const JUMP: [u32; 4] = [
+            0x8764000b, 0xf542d2d3, 0x6fa035c3, 0x77f2db5b,
+        ];
+        let mut s0 = 0;
+        let mut s1 = 0;
+        let mut s2 = 0;
+        let mut s3 = 0;
+        for j in &JUMP {
+            for b in 0..64 {
+                if (j & 1 << b) != 0 {
+                    s0 ^= self.s[0];
+                    s1 ^= self.s[1];
+                    s2 ^= self.s[2];
+                    s3 ^= self.s[3];
+                }
+                self.next_u32();
+            }
+        }
+        self.s[0] = s0;
+        self.s[1] = s1;
+        self.s[2] = s2;
+        self.s[3] = s3;
+    }
 }
 
 impl SeedableRng for Xoshiro128StarStar {
