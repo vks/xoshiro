@@ -7,7 +7,7 @@ extern crate rand_core;
 
 use std::mem::size_of;
 use bencher::{black_box, Bencher};
-use xoshiro::Xoshiro128;
+use xoshiro::Xoshiro128StarStar;
 use rand_core::{SeedableRng, RngCore};
 
 macro_rules! make_bench_u32 {
@@ -26,7 +26,7 @@ macro_rules! make_bench_u32 {
     }
 }
 
-make_bench_u32!(rand_u32_xoshiro, Xoshiro128);
+make_bench_u32!(rand_u32_xoshiro, Xoshiro128StarStar);
 
 benchmark_group!(benches, rand_u32_xoshiro);
 benchmark_main!(benches);

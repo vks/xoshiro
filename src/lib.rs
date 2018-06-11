@@ -13,22 +13,22 @@ fn starstar(s0: u32) -> u32 {
 }
 
 #[derive(Debug, Clone)]
-pub struct Xoshiro128 {
+pub struct Xoshiro128StarStar {
     s: [u32; 4],
 }
 
-impl SeedableRng for Xoshiro128 {
+impl SeedableRng for Xoshiro128StarStar {
     type Seed = [u8; 16];
 
     #[inline]
-    fn from_seed(seed: [u8; 16]) -> Xoshiro128 {
+    fn from_seed(seed: [u8; 16]) -> Xoshiro128StarStar {
         let mut state = [0; 4];
         read_u32_into(&seed, &mut state);
-        Xoshiro128 { s: state }
+        Xoshiro128StarStar { s: state }
     }
 }
 
-impl RngCore for Xoshiro128 {
+impl RngCore for Xoshiro128StarStar {
     #[inline]
     fn next_u32(&mut self) -> u32 {
         let result_starstar = starstar(self.s[0]);
@@ -69,7 +69,7 @@ mod tests {
 
     #[test]
     fn test_xoshiro() {
-        let mut rng = Xoshiro128::from_seed([1, 0, 0, 0,
+        let mut rng = Xoshiro128StarStar::from_seed([1, 0, 0, 0,
                                              2, 0, 0, 0,
                                              3, 0, 0, 0,
                                              4, 0, 0, 0]);
