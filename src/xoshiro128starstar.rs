@@ -32,28 +32,7 @@ impl Xoshiro128StarStar {
     /// # }
     /// ```
     pub fn jump(&mut self) {
-        const JUMP: [u32; 4] = [
-            0x8764000b, 0xf542d2d3, 0x6fa035c3, 0x77f2db5b,
-        ];
-        let mut s0 = 0;
-        let mut s1 = 0;
-        let mut s2 = 0;
-        let mut s3 = 0;
-        for j in &JUMP {
-            for b in 0..64 {
-                if (j & 1 << b) != 0 {
-                    s0 ^= self.s[0];
-                    s1 ^= self.s[1];
-                    s2 ^= self.s[2];
-                    s3 ^= self.s[3];
-                }
-                self.next_u32();
-            }
-        }
-        self.s[0] = s0;
-        self.s[1] = s1;
-        self.s[2] = s2;
-        self.s[3] = s3;
+        impl_jump!(u32, self, [0x8764000b, 0xf542d2d3, 0x6fa035c3, 0x77f2db5b]);
     }
 }
 

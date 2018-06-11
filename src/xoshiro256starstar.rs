@@ -32,29 +32,10 @@ impl Xoshiro256StarStar {
     /// # }
     /// ```
     pub fn jump(&mut self) {
-        const JUMP: [u64; 4] = [
+        impl_jump!(u64, self, [
             0x180ec6d33cfd0aba, 0xd5a61266f0c9392c,
             0xa9582618e03fc9aa, 0x39abdc4529b1661c
-        ];
-        let mut s0 = 0;
-        let mut s1 = 0;
-        let mut s2 = 0;
-        let mut s3 = 0;
-        for j in &JUMP {
-            for b in 0..64 {
-                if (j & 1 << b) != 0 {
-                    s0 ^= self.s[0];
-                    s1 ^= self.s[1];
-                    s2 ^= self.s[2];
-                    s3 ^= self.s[3];
-                }
-                self.next_u64();
-            }
-        }
-        self.s[0] = s0;
-        self.s[1] = s1;
-        self.s[2] = s2;
-        self.s[3] = s3;
+        ]);
     }
 }
 

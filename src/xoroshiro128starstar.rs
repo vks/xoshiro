@@ -45,20 +45,7 @@ impl Xoroshiro128StarStar {
     /// # }
     /// ```
     pub fn jump(&mut self) {
-        const JUMP: [u64; 2] = [0xdf900294d8f554a5, 0x170865df4b3201fc];
-        let mut s0 = 0;
-        let mut s1 = 0;
-        for j in &JUMP {
-            for b in 0..64 {
-                if (j & 1 << b) != 0 {
-                    s0 ^= self.s0;
-                    s1 ^= self.s1;
-                }
-                self.next_u64();
-            }
-        }
-        self.s0 = s0;
-        self.s1 = s1;
+        impl_jump!(u64, self, [0xdf900294d8f554a5, 0x170865df4b3201fc]);
     }
 }
 
