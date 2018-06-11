@@ -98,15 +98,27 @@ macro_rules! impl_jump {
         $self.s[2] = s2;
         $self.s[3] = s3;
     };
-}
-
-/// Implement the xoroshiro iteration.
-macro_rules! impl_xoroshiro_u64 {
-    ($self:expr) => {
-        $self.s1 ^= $self.s0;
-        $self.s0 = $self.s0.rotate_left(24) ^ $self.s1 ^ ($self.s1 << 16);
-        $self.s1 = $self.s1.rotate_left(37);
-    }
+    (u64, $self:expr, [$j0:expr, $j1:expr, $j2:expr, $j3:expr,
+                       $j4:expr, $j5:expr, $j6:expr, $j7:expr]) => {
+        const JUMP: [u64; 8] = [$j0, $j1, $j2, $j3, $j4, $j5, $j6, $j7];
+        let mut s = [0; 8];
+        for j in &JUMP {
+            for b in 0..64 {
+                if (j & 1 << b) != 0 {
+                    s[0] ^= $self.s[0];
+                    s[1] ^= $self.s[1];
+                    s[2] ^= $self.s[2];
+                    s[3] ^= $self.s[3];
+                    s[4] ^= $self.s[4];
+                    s[5] ^= $self.s[5];
+                    s[6] ^= $self.s[6];
+                    s[7] ^= $self.s[7];
+                }
+                $self.next_u64();
+            }
+        }
+        $self.s = s;
+    };
 }
 
 /// Implement the xoroshiro iteration.
@@ -115,6 +127,15 @@ macro_rules! impl_xoroshiro_u32 {
         $self.s1 ^= $self.s0;
         $self.s0 = $self.s0.rotate_left(26) ^ $self.s1 ^ ($self.s1 << 9);
         $self.s1 = $self.s1.rotate_left(13);
+    }
+}
+
+/// Implement the xoroshiro iteration.
+macro_rules! impl_xoroshiro_u64 {
+    ($self:expr) => {
+        $self.s1 ^= $self.s0;
+        $self.s0 = $self.s0.rotate_left(24) ^ $self.s1 ^ ($self.s1 << 16);
+        $self.s1 = $self.s1.rotate_left(37);
     }
 }
 
@@ -147,5 +168,25 @@ macro_rules! impl_xoshiro_u64 {
         $self.s[2] ^= t;
 
         $self.s[3] = $self.s[3].rotate_left(45);
+    }
+}
+
+/// Implement the large-state xoshiro iteration.
+macro_rules! impl_xoshiro_large {
+    ($self:expr) => {
+        let t = $self.s[1] << 11;
+
+        $self.s[2] ^= $self.s[0];
+        $self.s[5] ^= $self.s[1];
+        $self.s[1] ^= $self.s[2];
+        $self.s[7] ^= $self.s[3];
+        $self.s[3] ^= $self.s[4];
+        $self.s[4] ^= $self.s[5];
+        $self.s[0] ^= $self.s[6];
+        $self.s[6] ^= $self.s[7];
+
+        $self.s[6] ^= t;
+
+        $self.s[7] = $self.s[7].rotate_left(21);
     }
 }

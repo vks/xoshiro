@@ -12,9 +12,9 @@ impl Xoshiro256Plus {
         from_splitmix!(seed)
     }
 
-    /// Jump forward, equivalently to 2^64 calls to `next_u64()`.
+    /// Jump forward, equivalently to 2^128 calls to `next_u64()`.
     ///
-    /// This can be used to generate 2^64 non-overlapping subsequences for
+    /// This can be used to generate 2^128 non-overlapping subsequences for
     /// parallel computations.
     ///
     /// ```
