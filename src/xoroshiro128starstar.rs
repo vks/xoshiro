@@ -5,12 +5,8 @@ use rand_core::{RngCore, SeedableRng};
 
 use super::SplitMix64;
 
-fn rotl(x: u64, k: u64) -> u64 {
-    (x << k) | (x >> (64 - k))
-}
-
 fn starstar(s0: u64) -> u64 {
-    rotl(s0.wrapping_mul(5), 7).wrapping_mul(9)
+    s0.wrapping_mul(5).rotate_left(7).wrapping_mul(9)
 }
 
 /// A Xoroshiro128** random number generator.

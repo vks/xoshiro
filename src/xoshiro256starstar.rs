@@ -4,12 +4,8 @@ use rand_core::{SeedableRng, RngCore, Error};
 
 use super::SplitMix64;
 
-fn rotl(x: u64, k: u64) -> u64 {
-    (x << k) | (x >> (64 - k))
-}
-
 fn starstar(s0: u64) -> u64 {
-    rotl(s0.wrapping_mul(5), 7).wrapping_mul(9)
+    s0.wrapping_mul(5).rotate_left(7).wrapping_mul(9)
 }
 
 #[derive(Debug, Clone)]
@@ -99,7 +95,7 @@ impl RngCore for Xoshiro256StarStar {
 
         self.s[2] ^= t;
 
-        self.s[3] = rotl(self.s[3], 45);
+        self.s[3] = self.s[3].rotate_left(45);
 
         result_starstar
     }
