@@ -51,17 +51,7 @@ impl RngCore for Xoshiro128StarStar {
     #[inline]
     fn next_u32(&mut self) -> u32 {
         let result_starstar = starstar!(self.s[0]);
-        let t = self.s[1] << 9;
-
-        self.s[2] ^= self.s[0];
-        self.s[3] ^= self.s[1];
-        self.s[1] ^= self.s[2];
-        self.s[0] ^= self.s[3];
-
-        self.s[2] ^= t;
-
-        self.s[3] = self.s[3].rotate_left(11);
-
+        impl_xoshiro_u32!(self);
         result_starstar
     }
 

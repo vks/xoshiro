@@ -54,3 +54,44 @@ macro_rules! impl_jump {
         $self.s[3] = s3;
     };
 }
+
+/// Implement the xoroshiro iteration.
+macro_rules! impl_xoroshiro {
+    ($self:expr) => {
+        $self.s1 ^= $self.s0;
+        $self.s0 = $self.s0.rotate_left(24) ^ $self.s1 ^ ($self.s1 << 16);
+        $self.s1 = $self.s1.rotate_left(37);
+    }
+}
+
+/// Implement the xoshiro iteration for `u32` output.
+macro_rules! impl_xoshiro_u32 {
+    ($self:expr) => {
+        let t = $self.s[1] << 9;
+
+        $self.s[2] ^= $self.s[0];
+        $self.s[3] ^= $self.s[1];
+        $self.s[1] ^= $self.s[2];
+        $self.s[0] ^= $self.s[3];
+
+        $self.s[2] ^= t;
+
+        $self.s[3] = $self.s[3].rotate_left(11);
+    }
+}
+
+/// Implement the xoshiro iteration for `u64` output.
+macro_rules! impl_xoshiro_u64 {
+    ($self:expr) => {
+        let t = $self.s[1] << 17;
+
+        $self.s[2] ^= $self.s[0];
+        $self.s[3] ^= $self.s[1];
+        $self.s[1] ^= $self.s[2];
+        $self.s[0] ^= $self.s[3];
+
+        $self.s[2] ^= t;
+
+        $self.s[3] = $self.s[3].rotate_left(45);
+    }
+}
