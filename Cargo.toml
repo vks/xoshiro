@@ -12,5 +12,8 @@ version = "0.0.1"
 harness = false
 name = "bench"
 
+[dependencies]
+rand_core = "0.2"
+
 [dev-dependencies]
 bencher = "0.1.5"

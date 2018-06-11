@@ -1,3 +1,9 @@
+extern crate rand_core;
+
+use rand_core::impls::{next_u64_via_u32, fill_bytes_via_next};
+use rand_core::le::read_u32_into;
+use rand_core::{SeedableRng, RngCore, Error};
+
 fn rotl(x: u32, k: u32) -> u32 {
     (x << k) | (x >> (32 - k))
 }
@@ -11,14 +17,20 @@ pub struct Xoshiro128 {
     s: [u32; 4],
 }
 
-impl Xoshiro128 {
-    #[inline]
-    pub fn from_seed(s: [u32; 4]) -> Xoshiro128 {
-        Xoshiro128 { s }
-    }
+impl SeedableRng for Xoshiro128 {
+    type Seed = [u8; 16];
 
     #[inline]
-    pub fn next(&mut self) -> u32 {
+    fn from_seed(seed: [u8; 16]) -> Xoshiro128 {
+        let mut state = [0; 4];
+        read_u32_into(&seed, &mut state);
+        Xoshiro128 { s: state }
+    }
+}
+
+impl RngCore for Xoshiro128 {
+    #[inline]
+    fn next_u32(&mut self) -> u32 {
         let result_starstar = starstar(self.s[0]);
         let t = self.s[1] << 9;
 
@@ -33,6 +45,22 @@ impl Xoshiro128 {
 
         result_starstar
     }
+
+    #[inline]
+    fn next_u64(&mut self) -> u64 {
+        next_u64_via_u32(self)
+    }
+
+    #[inline]
+    fn fill_bytes(&mut self, dest: &mut [u8]) {
+        fill_bytes_via_next(self, dest);
+    }
+
+    #[inline]
+    fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Error> {
+        self.fill_bytes(dest);
+        Ok(())
+    }
 }
 
 #[cfg(test)]
@@ -41,7 +69,10 @@ mod tests {
 
     #[test]
     fn test_xoshiro() {
-        let mut rng = Xoshiro128::from_seed([1, 2, 3, 4]);
+        let mut rng = Xoshiro128::from_seed([1, 0, 0, 0,
+                                             2, 0, 0, 0,
+                                             3, 0, 0, 0,
+                                             4, 0, 0, 0]);
         // These values were produced with the reference implementation:
         // http://xoshiro.di.unimi.it/xoshiro128starstar.c
         let expected = [
@@ -49,7 +80,7 @@ mod tests {
             4118739149, 1251203317, 1581886583, 1721184582,
         ];
         for &e in &expected {
-            assert_eq!(rng.next(), e);
+            assert_eq!(rng.next_u32(), e);
         }
     }
 }
