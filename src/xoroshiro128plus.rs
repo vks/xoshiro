@@ -60,7 +60,7 @@ impl RngCore for Xoroshiro128Plus {
     #[inline]
     fn next_u64(&mut self) -> u64 {
         let r = self.s0.wrapping_add(self.s1);
-        impl_xoroshiro!(self);
+        impl_xoroshiro_u64!(self);
         r
     }
 

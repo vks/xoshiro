@@ -3,12 +3,12 @@ use rand_core::le::read_u32_into;
 use rand_core::{SeedableRng, RngCore, Error};
 
 #[derive(Debug, Clone)]
-pub struct Xoshiro128StarStar {
+pub struct Xoshiro128Plus {
     s: [u32; 4],
 }
 
-impl Xoshiro128StarStar {
-    pub fn from_seed_u64(seed: u64) -> Xoshiro128StarStar {
+impl Xoshiro128Plus {
+    pub fn from_seed_u64(seed: u64) -> Xoshiro128Plus {
         from_splitmix!(seed)
     }
 
@@ -36,23 +36,23 @@ impl Xoshiro128StarStar {
     }
 }
 
-impl SeedableRng for Xoshiro128StarStar {
+impl SeedableRng for Xoshiro128Plus {
     type Seed = [u8; 16];
 
     #[inline]
-    fn from_seed(seed: [u8; 16]) -> Xoshiro128StarStar {
+    fn from_seed(seed: [u8; 16]) -> Xoshiro128Plus {
         let mut state = [0; 4];
         read_u32_into(&seed, &mut state);
-        Xoshiro128StarStar { s: state }
+        Xoshiro128Plus { s: state }
     }
 }
 
-impl RngCore for Xoshiro128StarStar {
+impl RngCore for Xoshiro128Plus {
     #[inline]
     fn next_u32(&mut self) -> u32 {
-        let result_starstar = starstar_u64!(self.s[0]);
+        let result_plus = self.s[0].wrapping_add(self.s[3]);
         impl_xoshiro_u32!(self);
-        result_starstar
+        result_plus
     }
 
     #[inline]
@@ -78,13 +78,13 @@ mod tests {
 
     #[test]
     fn reference() {
-        let mut rng = Xoshiro128StarStar::from_seed(
+        let mut rng = Xoshiro128Plus::from_seed(
             [1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0]);
         // These values were produced with the reference implementation:
-        // http://xoshiro.di.unimi.it/xoshiro128starstar.c
+        // http://xoshiro.di.unimi.it/xoshiro128plus.c
         let expected = [
-            5760, 40320, 70819200, 3297914139, 2480851620, 1792823698,
-            4118739149, 1251203317, 1581886583, 1721184582,
+            5, 12295, 25178119, 27286542, 39879690, 1140358681, 3276312097,
+            4110231701, 399823256, 2144435200,
         ];
         for &e in &expected {
             assert_eq!(rng.next_u32(), e);
