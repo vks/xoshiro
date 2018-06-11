@@ -18,3 +18,4 @@ rand_core = "0.2"
 
 [dev-dependencies]
 bencher = "0.1.5"
+rand = "0.5"
