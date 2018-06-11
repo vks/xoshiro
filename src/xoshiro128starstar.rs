@@ -1,7 +1,8 @@
-
 use rand_core::impls::{next_u64_via_u32, fill_bytes_via_next};
 use rand_core::le::read_u32_into;
 use rand_core::{SeedableRng, RngCore, Error};
+
+use super::SplitMix64;
 
 fn rotl(x: u32, k: u32) -> u32 {
     (x << k) | (x >> (32 - k))
@@ -14,6 +15,13 @@ fn starstar(s0: u32) -> u32 {
 #[derive(Debug, Clone)]
 pub struct Xoshiro128StarStar {
     s: [u32; 4],
+}
+
+impl Xoshiro128StarStar {
+    pub fn from_seed_u64(seed: u64) -> Xoshiro128StarStar {
+        let mut rng = SplitMix64::from_seed_u64(seed);
+        Xoshiro128StarStar::from_rng(&mut rng).unwrap()
+    }
 }
 
 impl SeedableRng for Xoshiro128StarStar {

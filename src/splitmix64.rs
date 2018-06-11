@@ -1,3 +1,4 @@
+use byteorder::{ByteOrder, LittleEndian};
 use rand_core::le::read_u64_into;
 use rand_core::impls::fill_bytes_via_next;
 use rand_core::{RngCore, SeedableRng, Error};
@@ -18,7 +19,6 @@ pub struct SplitMix64 {
     x: u64,
 }
 
-/*
 impl SplitMix64 {
     pub fn from_seed_u64(seed: u64) -> SplitMix64 {
         let mut x = [0; 8];
@@ -26,7 +26,6 @@ impl SplitMix64 {
         SplitMix64::from_seed(x)
     }
 }
-*/
 
 impl RngCore for SplitMix64 {
     #[inline]
