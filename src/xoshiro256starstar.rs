@@ -76,7 +76,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_xoshiro() {
+    fn reference() {
         let mut rng = Xoshiro256StarStar::from_seed(
             [1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0,
              3, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0]);
