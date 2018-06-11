@@ -1,6 +1,8 @@
 extern crate byteorder;
 extern crate rand_core;
 
+#[macro_use]
+mod common;
 mod splitmix64;
 mod xoshiro128starstar;
 mod xoshiro256starstar;

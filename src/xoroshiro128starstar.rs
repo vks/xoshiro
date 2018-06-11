@@ -3,12 +3,6 @@ use rand_core::le::read_u64_into;
 use rand_core::impls::fill_bytes_via_next;
 use rand_core::{RngCore, SeedableRng};
 
-use super::SplitMix64;
-
-fn starstar(s0: u64) -> u64 {
-    s0.wrapping_mul(5).rotate_left(7).wrapping_mul(9)
-}
-
 /// A Xoroshiro128** random number generator.
 ///
 /// The Xoroshiro128** algorithm is not suitable for cryptographic purposes, but
@@ -28,8 +22,7 @@ pub struct Xoroshiro128StarStar {
 
 impl Xoroshiro128StarStar {
     pub fn from_seed_u64(seed: u64) -> Xoroshiro128StarStar {
-        let mut rng = SplitMix64::from_seed_u64(seed);
-        Xoroshiro128StarStar::from_rng(&mut rng).unwrap()
+        from_splitmix!(seed)
     }
 
     /// Jump forward, equivalently to 2^64 calls to `next_u64()`.
@@ -77,7 +70,7 @@ impl RngCore for Xoroshiro128StarStar {
 
     #[inline]
     fn next_u64(&mut self) -> u64 {
-        let r = starstar(self.s0);
+        let r = starstar!(self.s0);
         self.s1 ^= self.s0;
         self.s0 = self.s0.rotate_left(24) ^ self.s1 ^ (self.s1 << 16);
         self.s1 = self.s1.rotate_left(37);

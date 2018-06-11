@@ -3,8 +3,6 @@ use rand_core::le::read_u64_into;
 use rand_core::impls::fill_bytes_via_next;
 use rand_core::{RngCore, SeedableRng};
 
-use super::SplitMix64;
-
 /// A Xoroshiro128Plus+ random number generator.
 ///
 /// The Xoroshiro128Plus+ algorithm is not suitable for cryptographic purposes, but
@@ -24,8 +22,7 @@ pub struct Xoroshiro128Plus {
 
 impl Xoroshiro128Plus {
     pub fn from_seed_u64(seed: u64) -> Xoroshiro128Plus {
-        let mut rng = SplitMix64::from_seed_u64(seed);
-        Xoroshiro128Plus::from_rng(&mut rng).unwrap()
+        from_splitmix!(seed)
     }
 
     /// Jump forward, equivalently to 2^64 calls to `next_u64()`.

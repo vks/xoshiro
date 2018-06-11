@@ -2,12 +2,6 @@ use rand_core::impls::fill_bytes_via_next;
 use rand_core::le::read_u64_into;
 use rand_core::{SeedableRng, RngCore, Error};
 
-use super::SplitMix64;
-
-fn starstar(s0: u64) -> u64 {
-    s0.wrapping_mul(5).rotate_left(7).wrapping_mul(9)
-}
-
 #[derive(Debug, Clone)]
 pub struct Xoshiro256StarStar {
     s: [u64; 4],
@@ -15,8 +9,7 @@ pub struct Xoshiro256StarStar {
 
 impl Xoshiro256StarStar {
     pub fn from_seed_u64(seed: u64) -> Xoshiro256StarStar {
-        let mut rng = SplitMix64::from_seed_u64(seed);
-        Xoshiro256StarStar::from_rng(&mut rng).unwrap()
+        from_splitmix!(seed)
     }
 
     /// Jump forward, equivalently to 2^64 calls to `next_u64()`.
@@ -84,7 +77,7 @@ impl RngCore for Xoshiro256StarStar {
 
     #[inline]
     fn next_u64(&mut self) -> u64 {
-        let result_starstar = starstar(self.s[1]);
+        let result_starstar = starstar!(self.s[1]);
 
         let t = self.s[1] << 17;
 
