@@ -190,3 +190,29 @@ macro_rules! impl_xoshiro_large {
         $self.s[7] = $self.s[7].rotate_left(21);
     }
 }
+
+/// 512-bit seed for a generator.
+///
+/// This wrapper is necessary, because some traits required for a seed are not
+/// implemented on large arrays.
+#[derive(Clone)]
+pub struct Seed512(pub [u8; 64]);
+
+impl ::std::fmt::Debug for Seed512 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        self.0[..].fmt(f)
+    }
+}
+
+impl Default for Seed512 {
+    fn default() -> Seed512 {
+        Seed512([0; 64])
+    }
+}
+
+impl AsMut<[u8]> for Seed512 {
+    fn as_mut(&mut self) -> &mut [u8] {
+        &mut self.0
+    }
+}
+

@@ -2,6 +2,8 @@ use rand_core::impls::fill_bytes_via_next;
 use rand_core::le::read_u64_into;
 use rand_core::{SeedableRng, RngCore, Error};
 
+use Seed512;
+
 /// A xoshiro512+ random number generator.
 ///
 /// The xoshiro512+ algorithm is not suitable for cryptographic purposes, but
@@ -49,36 +51,11 @@ impl Xoshiro512Plus {
     }
 }
 
-/// Seed for a `Xoshiro512Plus` generator.
-///
-/// This wrapper is necessary, because some traits required for a seed are not
-/// implemented on large arrays.
-#[derive(Clone)]
-pub struct Xoshiro512PlusSeed(pub [u8; 64]);
-
-impl ::std::fmt::Debug for Xoshiro512PlusSeed {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.0[..].fmt(f)
-    }
-}
-
-impl Default for Xoshiro512PlusSeed {
-    fn default() -> Xoshiro512PlusSeed {
-        Xoshiro512PlusSeed([0; 64])
-    }
-}
-
-impl AsMut<[u8]> for Xoshiro512PlusSeed {
-    fn as_mut(&mut self) -> &mut [u8] {
-        &mut self.0
-    }
-}
-
 impl SeedableRng for Xoshiro512Plus {
-    type Seed = Xoshiro512PlusSeed;
+    type Seed = Seed512;
 
     #[inline]
-    fn from_seed(seed: Xoshiro512PlusSeed) -> Xoshiro512Plus {
+    fn from_seed(seed: Seed512) -> Xoshiro512Plus {
         let mut state = [0; 8];
         read_u64_into(&seed.0, &mut state);
         Xoshiro512Plus { s: state }
@@ -116,7 +93,7 @@ mod tests {
 
     #[test]
     fn reference() {
-        let mut rng = Xoshiro512Plus::from_seed(Xoshiro512PlusSeed(
+        let mut rng = Xoshiro512Plus::from_seed(Seed512(
             [1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0,
              3, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0,
              5, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0,
