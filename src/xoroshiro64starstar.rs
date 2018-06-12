@@ -22,6 +22,7 @@ pub struct Xoroshiro64StarStar {
 }
 
 impl Xoroshiro64StarStar {
+    /// Seed a `Xoroshiro64StarStar` from a `u64`.
     pub fn from_seed_u64(seed: u64) -> Xoroshiro64StarStar {
         let mut s = [0; 8];
         LittleEndian::write_u64(&mut s, seed);

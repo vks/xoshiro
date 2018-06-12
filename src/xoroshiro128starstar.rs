@@ -19,6 +19,7 @@ pub struct Xoroshiro128StarStar {
 }
 
 impl Xoroshiro128StarStar {
+    /// Seed a `Xoroshiro128StarStar` from a `u64` using `SplitMix64`.
     pub fn from_seed_u64(seed: u64) -> Xoroshiro128StarStar {
         from_splitmix!(seed)
     }

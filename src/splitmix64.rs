@@ -18,6 +18,7 @@ pub struct SplitMix64 {
 }
 
 impl SplitMix64 {
+    /// Seed a `SplitMix64` from a `u64`.
     pub fn from_seed_u64(seed: u64) -> SplitMix64 {
         let mut x = [0; 8];
         LittleEndian::write_u64(&mut x, seed);

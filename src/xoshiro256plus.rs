@@ -17,6 +17,7 @@ pub struct Xoshiro256Plus {
 }
 
 impl Xoshiro256Plus {
+    /// Seed a `Xoshiro256Plus` from a `u64` using `SplitMix64`.
     pub fn from_seed_u64(seed: u64) -> Xoshiro256Plus {
         from_splitmix!(seed)
     }
