@@ -4,15 +4,13 @@ use rand_core::le::read_u32_into;
 use rand_core::impls::{fill_bytes_via_next, next_u64_via_u32};
 use rand_core::{RngCore, SeedableRng};
 
-/// A Xoroshiro64** random number generator.
+/// A xoroshiro64* random number generator.
 ///
-/// The Xoroshiro64** algorithm is not suitable for cryptographic purposes, but
-/// is very fast and has better statistical properties than `XorShiftRng`.  If
-/// you do not know for sure that it fits your requirements, use a more secure
-/// one such as `IsaacRng` or `OsRng`.
+/// The xoroshiro64* algorithm is not suitable for cryptographic purposes, but
+/// is very fast and has excellent statistical properties.
 ///
-/// The algorithm used here is translated from [the `Xoroshiro64Star.c`
-/// reference source code](http://xoshiro.di.unimi.it/Xoroshiro64Star.c) by
+/// The algorithm used here is translated from [the `xoroshiro64star.c`
+/// reference source code](http://xoshiro.di.unimi.it/xoroshiro64star.c) by
 /// David Blackman and Sebastiano Vigna.
 #[allow(missing_copy_implementations)]
 #[derive(Debug, Clone)]

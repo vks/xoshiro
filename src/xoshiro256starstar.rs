@@ -2,6 +2,14 @@ use rand_core::impls::fill_bytes_via_next;
 use rand_core::le::read_u64_into;
 use rand_core::{SeedableRng, RngCore, Error};
 
+/// A xoshiro256** random number generator.
+///
+/// The xoshiro256** algorithm is not suitable for cryptographic purposes, but
+/// is very fast and has excellent statistical properties.
+///
+/// The algorithm used here is translated from [the `xoshiro256starstar.c`
+/// reference source code](http://xoshiro.di.unimi.it/xoshiro256starstar.c) by
+/// David Blackman and Sebastiano Vigna.
 #[derive(Debug, Clone)]
 pub struct Xoshiro256StarStar {
     s: [u64; 4],

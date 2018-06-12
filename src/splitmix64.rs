@@ -3,12 +3,10 @@ use rand_core::le::read_u64_into;
 use rand_core::impls::fill_bytes_via_next;
 use rand_core::{RngCore, SeedableRng, Error};
 
-/// A splitmix random number generator.
+/// A splitmix64 random number generator.
 ///
 /// The splitmix algorithm is not suitable for cryptographic purposes, but is
-/// very fast and has a 64 bit state.  Usually `XoroShiro128` should be prefered.
-/// If you do not know for sure that it fits your requirements, use a more
-/// secure one such as `IsaacRng` or `OsRng`.
+/// very fast and has a 64 bit state.
 ///
 /// The algorithm used here is translated from [the `splitmix64.c`
 /// reference source code](http://xoshiro.di.unimi.it/splitmix64.c) by

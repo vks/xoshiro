@@ -3,12 +3,10 @@ use rand_core::le::read_u64_into;
 use rand_core::impls::fill_bytes_via_next;
 use rand_core::{RngCore, SeedableRng};
 
-/// A Xoroshiro128** random number generator.
+/// A xoroshiro128** random number generator.
 ///
-/// The Xoroshiro128** algorithm is not suitable for cryptographic purposes, but
-/// is very fast and has better statistical properties than `XorShiftRng`.  If
-/// you do not know for sure that it fits your requirements, use a more secure
-/// one such as `IsaacRng` or `OsRng`.
+/// The xoroshiro128** algorithm is not suitable for cryptographic purposes, but
+/// is very fast and has excellent statistical properties.
 ///
 /// The algorithm used here is translated from [the `xoroshiro128starstar.c`
 /// reference source code](http://xoshiro.di.unimi.it/xoroshiro128starstar.c) by

@@ -2,6 +2,15 @@ use rand_core::impls::fill_bytes_via_next;
 use rand_core::le::read_u64_into;
 use rand_core::{SeedableRng, RngCore, Error};
 
+/// A xoshiro512+ random number generator.
+///
+/// The xoshiro512+ algorithm is not suitable for cryptographic purposes, but
+/// is very fast and has good statistical properties, besides a low linear
+/// complexity in the lowest bits.
+///
+/// The algorithm used here is translated from [the `xoshiro512plus.c`
+/// reference source code](http://xoshiro.di.unimi.it/xoshiro512plus.c) by
+/// David Blackman and Sebastiano Vigna.
 #[derive(Debug, Clone)]
 pub struct Xoshiro512Plus {
     s: [u64; 8],
@@ -40,6 +49,10 @@ impl Xoshiro512Plus {
     }
 }
 
+/// Seed for a `Xoshiro512Plus` generator.
+///
+/// This wrapper is necessary, because some traits required for a seed are not
+/// implemented on large arrays.
 #[derive(Clone)]
 pub struct Xoshiro512PlusSeed(pub [u8; 64]);
 
