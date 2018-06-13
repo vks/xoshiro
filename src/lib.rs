@@ -59,6 +59,8 @@
 //! [`Xoroshiro64StarStar`]: ./struct.Xoroshiro64StarStar.html
 //! [`Xoroshiro64Star`]: ./struct.Xoroshiro64Star.html
 
+#![cfg_attr(feature = "cargo-clippy", allow(unreadable_literal))]
+
 extern crate byteorder;
 extern crate rand_core;
 
