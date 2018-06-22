@@ -29,7 +29,11 @@ impl SplitMix64 {
 impl RngCore for SplitMix64 {
     #[inline]
     fn next_u32(&mut self) -> u32 {
-        self.next_u64() as u32
+        self.x = self.x.wrapping_add(0x9e3779b97f4a7c15);
+        let mut z = self.x;
+        z = (z ^ (z >> 33)).wrapping_mul(0x62A9D9ED799705F5);
+        z = (z ^ (z >> 28)).wrapping_mul(0xCB24D0A5C88C35B3);
+        (z >> 32) as u32
     }
 
     #[inline]
