@@ -10,7 +10,8 @@ use rand_core::{RngCore, SeedableRng, Error};
 ///
 /// The algorithm used here is translated from [the `splitmix64.c`
 /// reference source code](http://xoshiro.di.unimi.it/splitmix64.c) by
-/// Sebastiano Vigna.
+/// Sebastiano Vigna. For `next_u32`, a more efficient mixing function taken
+/// from [`dsiutils`](http://dsiutils.di.unimi.it/) is used.
 #[allow(missing_copy_implementations)]
 #[derive(Debug, Clone)]
 pub struct SplitMix64 {
@@ -26,11 +27,17 @@ impl SplitMix64 {
     }
 }
 
+const PHI: u64 = 0x9e3779b97f4a7c15;
+
 impl RngCore for SplitMix64 {
     #[inline]
     fn next_u32(&mut self) -> u32 {
-        self.x = self.x.wrapping_add(0x9e3779b97f4a7c15);
+        self.x = self.x.wrapping_add(PHI);
         let mut z = self.x;
+        // David Stafford's
+        // (http://zimbry.blogspot.com/2011/09/better-bit-mixing-improving-on.html)
+        // "Mix4" variant of the 64-bit finalizer in Austin Appleby's
+        // MurmurHash3 algorithm.
         z = (z ^ (z >> 33)).wrapping_mul(0x62A9D9ED799705F5);
         z = (z ^ (z >> 28)).wrapping_mul(0xCB24D0A5C88C35B3);
         (z >> 32) as u32
@@ -38,7 +45,7 @@ impl RngCore for SplitMix64 {
 
     #[inline]
     fn next_u64(&mut self) -> u64 {
-        self.x = self.x.wrapping_add(0x9e3779b97f4a7c15);
+        self.x = self.x.wrapping_add(PHI);
         let mut z = self.x;
         z = (z ^ (z >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
         z = (z ^ (z >> 27)).wrapping_mul(0x94d049bb133111eb);
