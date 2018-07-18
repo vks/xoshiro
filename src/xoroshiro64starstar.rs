@@ -6,10 +6,8 @@ use rand_core::{RngCore, SeedableRng};
 
 /// A Xoroshiro64** random number generator.
 ///
-/// The Xoroshiro64** algorithm is not suitable for cryptographic purposes, but
-/// is very fast and has better statistical properties than `XorShiftRng`.  If
-/// you do not know for sure that it fits your requirements, use a more secure
-/// one such as `IsaacRng` or `OsRng`.
+/// The xoshiro64** algorithm is not suitable for cryptographic purposes, but
+/// is very fast and has excellent statistical properties.
 ///
 /// The algorithm used here is translated from [the `xoroshiro64starstar.c`
 /// reference source code](http://xoshiro.di.unimi.it/xoroshiro64starstar.c) by

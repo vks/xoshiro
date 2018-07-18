@@ -7,7 +7,8 @@ use rand_core::{RngCore, SeedableRng};
 /// A xoroshiro64* random number generator.
 ///
 /// The xoroshiro64* algorithm is not suitable for cryptographic purposes, but
-/// is very fast and has excellent statistical properties.
+/// is very fast and has good statistical properties, besides a low linear
+/// complexity in the lowest bits.
 ///
 /// The algorithm used here is translated from [the `xoroshiro64star.c`
 /// reference source code](http://xoshiro.di.unimi.it/xoroshiro64star.c) by
