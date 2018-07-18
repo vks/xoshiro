@@ -47,6 +47,18 @@ impl Xoshiro256Plus {
             0xa9582618e03fc9aa, 0x39abdc4529b1661c
         ]);
     }
+
+    /// Jump forward, equivalently to 2^96 calls to `next_u64()`.
+    ///
+    /// This can be used to generate 2^32 starting points, from each of which
+    /// `jump()` will generate 2^32 non-overlapping subsequences for parallel
+    /// distributed computations.
+    pub fn long_jump(&mut self) {
+        impl_jump!(u64, self, [
+            0x76e15d3efefdcbbf, 0xc5004e441c522fb3,
+            0x77710069854ee241, 0x39109bb02acbe635
+        ]);
+    }
 }
 
 impl SeedableRng for Xoshiro256Plus {

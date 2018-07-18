@@ -46,6 +46,15 @@ impl Xoroshiro128StarStar {
     pub fn jump(&mut self) {
         impl_jump!(u64, self, [0xdf900294d8f554a5, 0x170865df4b3201fc]);
     }
+
+    /// Jump forward, equivalently to 2^96 calls to `next_u64()`.
+    ///
+    /// This can be used to generate 2^32 starting points, from each of which
+    /// `jump()` will generate 2^32 non-overlapping subsequences for parallel
+    /// distributed computations.
+    pub fn long_jump(&mut self) {
+        impl_jump!(u64, self, [0xd2a98b26625eee7b, 0xdddf9b1090aa7ac1]);
+    }
 }
 
 impl RngCore for Xoroshiro128StarStar {
