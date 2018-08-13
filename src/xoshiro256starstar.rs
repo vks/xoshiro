@@ -47,10 +47,10 @@ impl Xoshiro256StarStar {
         ]);
     }
 
-    /// Jump forward, equivalently to 2^96 calls to `next_u64()`.
+    /// Jump forward, equivalently to 2^192 calls to `next_u64()`.
     ///
-    /// This can be used to generate 2^32 starting points, from each of which
-    /// `jump()` will generate 2^32 non-overlapping subsequences for parallel
+    /// This can be used to generate 2^64 starting points, from each of which
+    /// `jump()` will generate 2^64 non-overlapping subsequences for parallel
     /// distributed computations.
     pub fn long_jump(&mut self) {
         impl_jump!(u64, self, [
