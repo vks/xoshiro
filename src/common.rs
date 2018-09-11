@@ -191,6 +191,15 @@ macro_rules! impl_xoshiro_large {
     }
 }
 
+/// Map an all-zero seed to a different one.
+macro_rules! deal_with_zero_seed {
+    ($seed:expr, $Self:ident) => {
+        if $seed.iter().all(|&x| x == 0) {
+            return $Self::from_seed_u64(0);
+        }
+    }
+}
+
 /// 512-bit seed for a generator.
 ///
 /// This wrapper is necessary, because some traits required for a seed are not

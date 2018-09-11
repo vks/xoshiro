@@ -57,10 +57,10 @@ impl RngCore for Xoroshiro64Star {
 impl SeedableRng for Xoroshiro64Star {
     type Seed = [u8; 8];
 
-    /// Create a new `Xoroshiro64Star`.  This will panic if `seed` is entirely 0.
+    /// Create a new `Xoroshiro64Star`.  If `seed` is entirely 0, it will be
+    /// mapped to a different seed.
     fn from_seed(seed: [u8; 8]) -> Xoroshiro64Star {
-        assert!(seed != [0, 0, 0, 0, 0, 0, 0, 0],
-            "Xoroshiro64Star::from_seed called with an all zero seed.");
+        deal_with_zero_seed!(seed, Self);
         let mut s = [0; 2];
         read_u32_into(&seed, &mut s);
 
