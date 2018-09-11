@@ -64,8 +64,11 @@ impl Xoshiro256Plus {
 impl SeedableRng for Xoshiro256Plus {
     type Seed = [u8; 32];
 
+    /// Create a new `Xoshiro256Plus`.  If `seed` is entirely 0, it will be
+    /// mapped to a different seed.
     #[inline]
     fn from_seed(seed: [u8; 32]) -> Xoshiro256Plus {
+        deal_with_zero_seed!(seed, Self);
         let mut state = [0; 4];
         read_u64_into(&seed, &mut state);
         Xoshiro256Plus { s: state }

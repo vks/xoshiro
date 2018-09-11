@@ -48,8 +48,11 @@ impl Xoshiro128StarStar {
 impl SeedableRng for Xoshiro128StarStar {
     type Seed = [u8; 16];
 
+    /// Create a new `Xoshiro128StarStar`.  If `seed` is entirely 0, it will be
+    /// mapped to a different seed.
     #[inline]
     fn from_seed(seed: [u8; 16]) -> Xoshiro128StarStar {
+        deal_with_zero_seed!(seed, Self);
         let mut state = [0; 4];
         read_u32_into(&seed, &mut state);
         Xoshiro128StarStar { s: state }

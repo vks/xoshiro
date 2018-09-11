@@ -207,6 +207,13 @@ macro_rules! deal_with_zero_seed {
 #[derive(Clone)]
 pub struct Seed512(pub [u8; 64]);
 
+impl Seed512 {
+    /// Return an iterator over the seed.
+    pub fn iter(&self) -> ::std::slice::Iter<u8> {
+        self.0.iter()
+    }
+}
+
 impl ::std::fmt::Debug for Seed512 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         self.0[..].fmt(f)
