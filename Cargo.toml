@@ -7,7 +7,7 @@ categories = ["algorithms"]
 license = "MIT/Apache-2.0"
 name = "xoshiro"
 repository = "https://github.com/vks/xoshiro"
-version = "0.0.4"
+version = "0.0.5"
 
 [[bench]]
 harness = false
