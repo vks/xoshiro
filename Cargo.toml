@@ -15,11 +15,11 @@ name = "bench"
 
 [dependencies]
 byteorder = "1"
-rand_core = "0.2"
+rand_core = "0.3"
 
 [dev-dependencies]
 bencher = "0.1.5"
-rand = "0.5"
+rand = "0.6"
 
 [badges]
 maintenance = { status = "deprecated" }
