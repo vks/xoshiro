@@ -1,5 +1,7 @@
 # xoshiro
 
+**The crate is deprecated in favor of the [rand_xoshiro] crate.**
+
 [![Status][status-img]][status-url]
 
 Rust implementation of the [xoshiro, xoroshiro and splitmix64](http://xoshiro.di.unimi.it) random number generators.
@@ -14,3 +16,4 @@ See LICENSE-APACHE, and LICENSE-MIT for details.
 
 [status-img]: https://travis-ci.org/vks/xoshiro.svg?branch=master
 [status-url]: https://travis-ci.org/vks/xoshiro
+[rand_xoshiro]: https://github.com/rust-random/rand
