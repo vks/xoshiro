@@ -16,4 +16,4 @@ See LICENSE-APACHE, and LICENSE-MIT for details.
 
 [status-img]: https://travis-ci.org/vks/xoshiro.svg?branch=master
 [status-url]: https://travis-ci.org/vks/xoshiro
-[rand_xoshiro]: https://github.com/rust-random/rand
+[rand_xoshiro]: https://github.com/rust-random/rngs
